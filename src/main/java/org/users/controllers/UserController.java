@@ -21,38 +21,37 @@ import org.users.utills.JwtUtills;
 @RequestMapping("user/")
 public class UserController {
 
-	@Autowired
-	UserService userService;
-	@Autowired
-	AuthenticationManager authenticationManager;
+    @Autowired
+    UserService userService;
+    @Autowired
+    AuthenticationManager authenticationManager;
 
-	@Autowired
-	JwtUtills utills;
+    @Autowired
+    JwtUtills utills;
 
-	@PostMapping("register/")
-	public ResponseEntity<?> register(@RequestBody AuthRequestDto authRequestDto) {
-		userService.register(authRequestDto);
-		return ResponseEntity.ok("User Register Successfully");
-	}
+    @PostMapping("register/")
+    public ResponseEntity<?> register(@RequestBody AuthRequestDto authRequestDto) {
+        userService.register(authRequestDto);
+        return ResponseEntity.ok("User Register Successfully");
+    }
 
-	@PostMapping("login/")
-	public ResponseEntity<AuthResponceDto> login(@RequestBody AuthRequestDto request) {
-		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String token = utills.generateToken(request.getUsername());
-		return ResponseEntity.ok(new AuthResponceDto(token));
-	}
+    @PostMapping("login/")
+    public ResponseEntity<AuthResponceDto> login(@RequestBody AuthRequestDto request) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = utills.generateToken(request.getUsername());
+        return ResponseEntity.ok(new AuthResponceDto(token));
+    }
 
-	// @PreAuthorize("hasRole(ADMIN)")
-	@DeleteMapping("delete/{id}")
-	public String deleteUserbyId(@PathVariable Integer id) {
-		if (id == null || id <= 0) {
-			return " Provided " + id + "not existed ";
-		}
-		String result = userService.deleteUserById(id);
+    // @PreAuthorize("hasRole(ADMIN)")
+   /* @DeleteMapping("delete/{id}")
+    public String deleteUserbyId(@PathVariable Integer id) {
+        if (id == null || id <= 0) {
+            return " Provided " + id + "not existed ";
+        }
 
-		return result;
+        return userService.deleteUserById(id);
 
-	}
+    }*/
 }
