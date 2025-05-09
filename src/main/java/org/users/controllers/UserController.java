@@ -1,21 +1,19 @@
 package org.users.controllers;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.users.dto.AuthRequestDto;
 import org.users.dto.AuthResponceDto;
+import org.users.entity.User;
+import org.users.repository.UserRepository;
 import org.users.services.UserService;
 import org.users.utills.JwtUtills;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("user/")
@@ -23,16 +21,25 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     JwtUtills utills;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping("{id}/")
+    public Optional<User> findUserById(@PathVariable int id) {
+        return userRepository.findById(id);
+    }
+
     @PostMapping("register/")
     public ResponseEntity<?> register(@RequestBody AuthRequestDto authRequestDto) {
         userService.register(authRequestDto);
-        return ResponseEntity.ok("User Register Successfully");
+        return ResponseEntity.ok("User Register Successfully!!!");
     }
 
     @PostMapping("login/")
@@ -45,7 +52,7 @@ public class UserController {
     }
 
     // @PreAuthorize("hasRole(ADMIN)")
-   /* @DeleteMapping("delete/{id}")
+    @DeleteMapping("delete/{id}")
     public String deleteUserbyId(@PathVariable Integer id) {
         if (id == null || id <= 0) {
             return " Provided " + id + "not existed ";
@@ -53,5 +60,5 @@ public class UserController {
 
         return userService.deleteUserById(id);
 
-    }*/
+    }
 }

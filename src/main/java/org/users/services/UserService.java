@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.users.dto.AuthRequestDto;
 import org.users.entity.User;
+import org.users.exception.UserAlreadyExistsException;
 import org.users.repository.UserRepository;
 
 @Service
@@ -19,6 +20,11 @@ public class UserService {
 	PasswordEncoder passwordEncoder;
 
 	public void register(AuthRequestDto authRequestDto) {
+		Optional<User> existingUser = userRepository.findByUsernameAndEmail(authRequestDto.getUsername(),authRequestDto.getEmail());
+
+		if(existingUser.isPresent()){
+			throw new UserAlreadyExistsException("User Already exist");
+		}
 		User user = new User();
 		user.setUsername(authRequestDto.getUsername());
 		user.setEmail(authRequestDto.getEmail());
